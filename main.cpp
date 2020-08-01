@@ -55,7 +55,6 @@ int main(){
         do{
             std::cout<<"\n1\n";
             //Clear the fog around the player
-            game.getPlayer()->setCoordinates(6, 89);
             game.clearFog();
             std::cout<<"\nI:"<<game.getPlayer()->getY()<<" J:"<<game.getPlayer()->getX()<<"\n\n";
             game.printInterface();
