@@ -526,12 +526,14 @@ void Game::printInterface(){
                     if(!written){
                         switch (getElementType(i, j)){
                             case 0:
-                            //Nothing
+                                //Nothing
+                                written = true;
                                 std::cout<<" ";
                                 break;
                             case 1:
                                 //Door
                                 {
+                                    written = true;
                                     std::vector<std::unique_ptr<Room>>::iterator roomsEnd = rooms.end();
                                     for(std::vector<std::unique_ptr<Room>>::iterator it = rooms.begin(); it != roomsEnd; it ++){
                                         std::vector<std::unique_ptr<Door>>::iterator end = (**it).doors.end();
@@ -550,24 +552,30 @@ void Game::printInterface(){
                                 break;
                             case 2:
                                 //Floor
+                                written = true;
                                 printUnicode(rooms.at(abs(m[i][j]) - 4)->getChFloor(), 0);
                                 break;
                             case 3:
                                 //Path
+                                written = true;
                                 printUnicode(chPath, 0);
                                 break;
                             case 4:
                                 //Wall
+                                written = true;
                                 printUnicode(rooms.at(abs(m[i][j]) - 4)->getChWall(), 0);
                                 break;
                             case 8:
                                 //Exit
+                                written = true;
                                 printUnicode(this->chExit, 0);
                                 break;
                             default:
                                 break;
                         }
                     }
+                    if(!written)
+                        printUnicode(rooms.at(abs(m[i][j]) - 4)->getChFloor(), 0);
                 }else{
                     //It's int the fog
                     printUnicode(chFog, 0);
@@ -1683,13 +1691,11 @@ void Game::moveEnemies(){
             }
             //If player is in sight range, move towards him
             else if(getDistance((**it), *player) <= (**it).getSightRange()){
-                std::cout<<"\nA star walk";
                 walkShortestPath(**it, this->player->getX(), this->player->getY());
                 (**it).setNextActTime(this->lapsedTime + (**it).getMovTime());
             }
             //If none, just move randomly
             else{
-                std::cout<<"\nRandom walk";
                 //Check available directions
                 std::vector<unsigned int> directions;
                 if(isWalkable((**it).getX(), (**it).getY() -1)){
@@ -2434,7 +2440,7 @@ void Game::printRange(std::vector<Square> areasOfEffect, unsigned int range, cha
                 }
             }
 
-            if(j < 0 || i < 0 || j > MAX_MATRIX_WIDTH || i > MAX_MATRIX_HEIGHT){
+            if(j < 0 || i < 0 || j >= MAX_MATRIX_WIDTH || i >= MAX_MATRIX_HEIGHT){
                 std::cout<<" ";
             }else{
                 //Check if Player is in this position
@@ -2590,7 +2596,7 @@ void Game::walkShortestPath(Character& c, unsigned int targetX, unsigned int tar
         //TEMP INIZIO
         for (int i = player->getY() - (MAP_HEIGHT/2); i != player->getY() + (MAP_HEIGHT/2) +1; i++) {
             for (int j = player->getX() - (MAP_WIDTH/2); j != player->getX() + (MAP_WIDTH/2) +1; j++) {
-                if(j < 0 || i < 0 || j > MAX_MATRIX_WIDTH || i > MAX_MATRIX_HEIGHT){
+                if(j < 0 || i < 0 || j >= MAX_MATRIX_WIDTH || i >= MAX_MATRIX_HEIGHT){
                     std::cout<<" ";
                 }else{
                     //Check if Player is in this position
@@ -2630,74 +2636,51 @@ void Game::walkShortestPath(Character& c, unsigned int targetX, unsigned int tar
         //Add the walkable squares to the open list if necessary
         //Upper square
         //Check if the target is in the open list
-        //std::cout<<"\n\nROSSO: "<<current->getX()<<"   "<<current->getY();
-        //std::cout<<"\n\nCURRENT: "<<current->getX()<<"   "<<current->getY() - 1;
-        //std::cout<<"\nTARGET: "<<targetX<<","<<targetY<<"\n\n";
         counter ++;
-        std::cout<<"\nStar 1";
         if(current->getX() == targetX && current->getY() - 1 == targetY){
             found = true;
-            //std::cout<<"eccolo";
             break;
         }
-        std::cout<<"\nStar 2";
         if(isWalkable(current->getX(), current->getY() - 1)){
             std::shared_ptr<Box> temp = std::make_shared<Box>(Box(current->getX(), current->getY() - 1, current->getG() + 1, getDistance(current->getX(), current->getY() - 1, targetX, targetY)));
             //Set previous box
             temp->setPreviousBox(current);
-            //std::cout<<"\n\n"<<temp->getPreviousBox()->getX();
             
             checkBox(current, temp, openList, closedList, targetX, targetY);
         }
-        std::cout<<"\nStar 3";
         //Lower square
         //Check if the target is in the open list
-        //std::cout<<"\n\nCURRENT: "<<current->getX()<<"   "<<current->getY() + 1;
-        //std::cout<<"\nTARGET: "<<targetX<<","<<targetY<<"\n\n";
         if(current->getX() == targetX && current->getY() + 1 == targetY){
             found = true;
-            //std::cout<<"eccolo";
             break;
         }
-        std::cout<<"\nStar 4";
         if(isWalkable(current->getX(), current->getY() + 1)){
             std::shared_ptr<Box> temp = std::make_shared<Box>(Box(current->getX(), current->getY() + 1, current->getG() + 1, getDistance(current->getX(), current->getY() + 1, targetX, targetY)));
             //Set previous box
             temp->setPreviousBox(current);
-            //std::cout<<"\n\n"<<temp->getPreviousBox()->getX();
             //Check if the target is in the open list
             checkBox(current, temp, openList, closedList, targetX, targetY);
         }
-        std::cout<<"\nStar 5";
         //Right square
         //Check if the target is in the open list
-        //std::cout<<"\n\nCURRENT: "<<current->getX() + 1<<"   "<<current->getY();
-        //std::cout<<"\nTARGET: "<<targetX<<","<<targetY<<"\n\n";
         if(current->getX() + 1 == targetX && current->getY() == targetY){
             found = true;
-            //std::cout<<"eccolo";
             break;
         }
-        std::cout<<"\nStar 6";
         if(isWalkable(current->getX() + 1, current->getY())){
             std::shared_ptr<Box> temp = std::make_shared<Box>(Box(current->getX() + 1, current->getY(), current->getG() + 1, getDistance(current->getX() + 1, current->getY(), targetX, targetY)));
             //Set previous box
             temp->setPreviousBox(current);
-            //std::cout<<"\n\n"<<temp->getPreviousBox()->getX();
             //Check if the target is in the open list
             checkBox(current, temp, openList, closedList, targetX, targetY);
         }
-        std::cout<<"\nStar 7";
         //Left square
         //Check if the target is in the open list
-        //std::cout<<"\n\nCURRENT: "<<current->getX() - 1<<"   "<<current->getY();
-        //std::cout<<"\nTARGET: "<<targetX<<","<<targetY<<"\n\n";
         if(current->getX() - 1 == targetX && current->getY() == targetY){
             found = true;
-            //std::cout<<"eccolo";
             break;
         }
-        std::cout<<"\nStar 8";
+        //std::cout<<"\nStar 8";
         if(isWalkable(current->getX() - 1, current->getY())){
             std::shared_ptr<Box> temp = std::make_shared<Box>(Box(current->getX() - 1, current->getY(), current->getG() + 1, getDistance(current->getX() - 1, current->getY(), targetX, targetY)));
             //Set previous box
@@ -2705,7 +2688,6 @@ void Game::walkShortestPath(Character& c, unsigned int targetX, unsigned int tar
             //Check if the target is in the open list
             checkBox(current, temp, openList, closedList, targetX, targetY);
         }
-        std::cout<<"\nStar 9";
         //Find the box with the lower F score
         std::vector<std::shared_ptr<Box>>::iterator it = openList.begin();
         std::vector<std::shared_ptr<Box>>::iterator end = openList.end();
@@ -2726,26 +2708,18 @@ void Game::walkShortestPath(Character& c, unsigned int targetX, unsigned int tar
                 }
             }
         }
-        std::cout<<"\nStar 10";
         if(openList.size() == 0)
             break;
-        std::cout<<"\nStar 11";
         //Add the box with the lower F score to the closed list
         closedList.push_back(std::make_shared<Box>(Box(openList.at(minIndex)->getX(), openList.at(minIndex)->getY(), openList.at(minIndex)->getG(), openList.at(minIndex)->getH())));
-        std::cout<<"\nStar 12";
         closedList.back()->setPreviousBox(openList.at(minIndex)->getPreviousBox());
         //Set the current box
-        std::cout<<"\nStar 13";
         current = closedList.back();
-        std::cout<<"\nStar 14";
         //Remove the current box from the open list
         openList.erase(openList.begin() + minIndex);
-        std::cout<<"\nStar 15";
         if(counter > 150)
             break;
-        std::cout<<"\nStar 16";
     }
-    std::cout<<"\nCounter: "<<counter;
     //If the path has been found...
     if(found){
         std::shared_ptr<Box> p = current;
@@ -2758,7 +2732,7 @@ void Game::walkShortestPath(Character& c, unsigned int targetX, unsigned int tar
         c.setCoordinates(p->getX(), p->getY());
     }else{
         //Else there is no path, the character won't move for now
-        std::cout<<"\n\nNot found :(\n\n";
+        //std::cout<<"\n\nNot found :(\n\n";
     }
 }
 

@@ -31,18 +31,9 @@ int main(){
         std::cout<<"\nDone!\nClearing unused doors...";
         game.clearUnusedDoors();
         std::cout<<"\nDone!\n";
-        /*for(int i = 0; i != MAX_MATRIX_HEIGHT; i++){
-            for(int j = 0; j != MAX_MATRIX_WIDTH; j++){
-                std::cout<<"\nI: "<<i<<"   J: "<<j<<"       ";
-                std::cout<<abs(game.m[i][j]);
-            }
-        }
-        game.printMatrix();
-        return 0;*/
         game.chooseClass();
     }
 
-     std::cout<<"\n1\n";
 
     
     //Game loop
@@ -53,21 +44,15 @@ int main(){
     //system("cls");
     while(gameState == 0){
         do{
-            std::cout<<"\n1\n";
             //Clear the fog around the player
             game.clearFog();
-            std::cout<<"\nI:"<<game.getPlayer()->getY()<<" J:"<<game.getPlayer()->getX()<<"\n\n";
+            system("cls");
             game.printInterface();
             std::string choice = "";
             std::getline(std::cin, choice);
-            std::cout<<"\n2\n";
-            //system("cls");
-            std::cout<<"\n3\n";
             actionType = game.getPlayer()->input(choice);
-            std::cout<<"\n4\n";
             //If the user inserted a valid action
             if(actionType != 0){
-                std::cout<<"\n5\n";
                 error = 0;
                 switch (actionType){
                     case 1: 
@@ -182,36 +167,28 @@ int main(){
                 fflush(stdin);
                 system("pause");
             }
-            std::cout<<"\n6\n";
         }while(actionType == 0 || error != 0);
-        std::cout<<"\n7\n";
         //Check if player died because of an ability check
         if(game.getPlayer()->getHP() == 0){
             gameState = 1;
             break;
         }
-        std::cout<<"\n8\n";
         //Check if player won
         if(game.getPlayer()->getX() == game.getExitX() &&  game.getPlayer()->getY() == game.getExitY()){
             gameState = 2;
             break;
         } 
-        std::cout<<"\n9\n";
         //Move enemies
-        std::cout<<"moving enemies...";
         if(game.lapsedTime > 0)
             game.moveEnemies();
-        std::cout<<"enemies moved";
         //Check if the player died after the enemy moves
         if(game.getPlayer()->getHP() == 0){
             gameState = 1;
             break;
         }
-        std::cout<<"\n10\n";
     }
-    std::cout<<"\n11\n";
     if(gameState == 2){
-        //system("cls");
+        system("cls");
         int score = 0;
         for(int i = 1; i != game.getPlayer()->getLvl(); i++){
             score += 100 * i;
@@ -223,7 +200,7 @@ int main(){
         game.printInterface();
         fflush(stdin);
         system("pause");
-        //system("cls");
+        system("cls");
         std::cout<<"\n\n\n                          /(-.-)\\ You lost... Better luck next time! /(-.-)\\\n\n\n";
         system("pause");
     }
