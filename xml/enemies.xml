@@ -1,0 +1,32 @@
+<enemies>
+    <enemy label="Goblin" ch="0x0047" >
+        <baseStats hpMax="5" str="5" dex="2" mnd="1" wis="1" res="1" movT="1.5" actT="2.5" />
+        <enemyStats atkStat="str" atkRange="1" sight="4" exp="20" gp="5" />
+    </enemy>
+
+    <enemy label="Lance Knight" ch="0x004C">
+        <baseStats hpMax="8" str="7" dex="2" mnd="2" wis="1" res="2" movT="1.5" actT="2.5" />
+        <enemyStats atkStat="str" atkRange="2" sight="6" exp="40" gp="20" />
+    </enemy>
+
+    <enemy label="Wolf" ch="0x0057">
+        <baseStats hpMax="6" str="4" dex="5" mnd="1" wis="1" res="0" movT="0.75" actT="1.5" />
+        <enemyStats atkStat="dex" atkRange="1" sight="8" exp="50" gp="2" />
+    </enemy>
+
+    <enemy label="Crossbow Goblin" ch="0x0043">
+        <baseStats hpMax="5" str="1" dex="5" mnd="1" wis="1" res="1" movT="1.5" actT="2.0" />
+        <enemyStats atkStat="dex" atkRange="5" sight="10" exp="35" gp="10" />
+    </enemy>
+
+    <enemy label="Scheleton Archer" ch="0x0041">
+        <baseStats hpMax="4" str="1" dex="6" mnd="1" wis="1" res="0" movT="1.5" actT="2.0" />
+        <enemyStats atkStat="dex" atkRange="5" sight="10" exp="35" gp="8" />
+    </enemy>
+
+    <enemy label="Slime" ch="0x0053">
+        <baseStats hpMax="4" str="1" dex="1" mnd="1" wis="1" res="3" movT="0.5" actT="1.0" />
+        <enemyStats atkStat="res" atkRange="1" sight="5" exp="10" gp="1" />
+    </enemy> 
+
+</enemies>

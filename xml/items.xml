@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+    <protection label="Leather Armor" ch="0x00BF">
+        <effect stat="maxHp" value="3.0" />
+        <effect stat="res" value="0.5" />
+    </protection>
+        
+    <protection label="Iron Armor" ch="0x00BF">
+        <effect stat="maxHp" value="5.0" />
+        <effect stat="res" value="1.5" />
+    </protection>
+
+    <protection label="Cloak Of Agility" ch="0x00BF">
+        <effect stat="maxHp" value="2.5" />
+        <effect stat="dex" value="2.0" />
+        <effect stat="movT" value="-0.5" />
+    </protection>
+
+    <potion label="Healing Potion" ch="0x00BF">
+        <effect stat="hp" value="10.0" />
+    </potion>
+
+    <potion label="Greater Healing Potion" ch="0x00BF">
+        <effect stat="hp" value="20.0" />
+    </potion>
+
+    <potion label="Mana Potion" ch="0x00BF">
+        <effect stat="mp" value="10.0" />
+    </potion>
+ 
+    <potion label="Greater Mana Potion" ch="0x00BF">
+        <effect stat="mp" value="20.0" />
+    </potion>
+
+    <potion label="Strength Potion" ch="0x00BF">
+        <effect stat="str" value="1.0" />
+    </potion>
+
+    <herb label="Poison Herbs" ch="0x00BF" >
+        <effect stat="hp" value="-3.0" />
+        <effect stat="maxHp" value="-3.0" />
+        <effect stat="mnd" value="-1.0" />
+    </herb>
+ 
+    <herb label="Blu Buff" ch="0x00BF" >
+        <effect stat="maxMp" value="10.0" />
+        <effect stat="mp" value="5.0" />
+    </herb>
+
+    <herb label="Bull Hair" ch="0x00BF" >
+        <effect stat="str" value="3.0" />
+        <effect stat="mnd" value="-1.0" />
+        <effect stat="wis" value="-1.0" />
+    </herb>
+
+    <herb label="Whiter Rose" ch="0x00BF" >
+        <effect stat="str" value="-2.0" />
+        <effect stat="dex" value="-2.0" />
+        <effect stat="mnd" value="-2.0" />
+        <effect stat="wis" value="-2.0" />
+        <effect stat="res" value="-2.0" />
+        <effect stat="maxHp" value="-5.0" />
+    </herb>
+
+    <herb label="Trial Herbs" ch="0x00BF" >
+        <effect stat="hp" value="-3.0" />
+        <effect stat="maxHp" value="-3.0" />
+        <effect stat="wis" value="-1.0" />
+        <effect stat="str" value="2.0" />
+        <effect stat="dex" value="2.0" />
+    </herb>
+
+    <herb label="Healing Herbs" ch="0x00BF" >
+        <effect stat="hp" value="5.0" />
+    </herb>
+
+    <herb label="Miraculous Herbs" ch="0x00BF" >
+        <effect stat="hp" value="5.0" />
+        <effect stat="maxHp" value="5.0" />
+    </herb>
+
+    <weapon label="Longsword" range="0" durability="0"  ch="0x00BF">
+        <bonusStats>
+            <effect stat="str" value="1.0" />
+            <effect stat="dex" value="0.5" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="1.0" rd="0.0" stat="str" pot="1.0" /> 
+        </areaOfEffect>
+    </weapon>
+ 
+    <weapon label="MorningStar" range="2" durability="0"  ch="0x00BF">
+        <bonusStats>
+            <effect stat="str" value="1.0" />
+            <effect stat="dex" value="1.0" />
+            <effect stat="movT" value="1.0" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="str" pot="1.5" /> 
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="Scythe" range="0" durability="0"  ch="0x00BF">
+        <bonusStats>
+            <effect stat="dex" value="2.0" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="1.0" rd="0.0" stat="dex" pot="1" /> 
+            <square fd="1.0" rd="1.0" stat="dex" pot="0.75" /> 
+            <square fd="1.0" rd="-1.0" stat="dex" pot="0.75" />
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="Dagger" range="0" durability="0"  ch="0x00BF">
+        <bonusStats>
+            <effect stat="dex" value="1.0" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="1.0" rd="0.0" stat="dex" pot="1.0" /> 
+        </areaOfEffect>
+    </weapon>
+   
+    <weapon label="Tower Shield" range="0" durability="0" ch="0x00BF">
+        <bonusStats>
+            <effect stat="res" value="2.0" />
+            <effect stat="dex" value="-2.0" />
+            <effect stat="movT" value="1.0" />
+            <effect stat="movT" value="1.0" /> 
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="1.0" rd="0.0" stat="res" pot="1.0" />
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="War Axe" range="0" durability="0"  ch="0x00BF">
+        <bonusStats>
+            <effect stat="str" value="1.0" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="1.0" rd="0.0" stat="str" pot="1" /> 
+            <square fd="1.0" rd="1.0" stat="str" pot="0.75" /> 
+            <square fd="1.0" rd="-1.0" stat="str" pot="0.75" /> 
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="Bow" range="20" durability="20"  ch="0x00BF" >
+        <bonusStats>
+            <effect stat="dex" value="0.5" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="dex" pot="0.6" /> 
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="War Bow" range="30" durability="40"  ch="0x00BF" >
+        <bonusStats>
+            <effect stat="dex" value="1.5" />
+        </bonusStats>
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="dex" pot="0.8" /> 
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="Wand Of Explosive Fire" range="5" durability="0"  ch="0x00BF">
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="mnd" pot="0.6" />
+            <square fd="1.0" rd="0.0" stat="mnd" pot="0.4" />
+            <square fd="0.0" rd="1.0" stat="mnd" pot="0.4" />
+            <square fd="-1.0" rd="0.0" stat="mnd" pot="0.4" />
+            <square fd="0.0" rd="-1.0" stat="mnd" pot="0.4" />
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="Bomb" range="0" durability="2"  ch="0x00BF">
+        <areaOfEffect>
+            <square fd="1.0" rd="-1.0" stat="none" pot="10.0" />
+            <square fd="2.0" rd="-1.0" stat="none" pot="10.0" />
+            <square fd="3.0" rd="-1.0" stat="none" pot="10.0" />
+            <square fd="1.0" rd="0.0" stat="none" pot="10.0" />
+            <square fd="2.0" rd="0.0" stat="none" pot="10.0" />
+            <square fd="3.0" rd="0.0" stat="none" pot="10.0" />
+            <square fd="1.0" rd="1.0" stat="none" pot="10.0" />
+            <square fd="2.0" rd="1.0" stat="none" pot="10.0" />
+            <square fd="3.0" rd="1.0" stat="none" pot="10.0" />        
+        </areaOfEffect>
+    </weapon>
+
+    <weapon label="The Mega Bomb Of BOOM" range="0" durability="2"  ch="0x00BF">
+        <areaOfEffect>
+            <square fd="1.0" rd="-2.0" stat="none" pot="20.0" />
+            <square fd="2.0" rd="-2.0" stat="none" pot="20.0" />
+            <square fd="3.0" rd="-2.0" stat="none" pot="20.0" />
+            <square fd="4.0" rd="-2.0" stat="none" pot="20.0" />
+            <square fd="5.0" rd="-2.0" stat="none" pot="20.0" />
+            <square fd="1.0" rd="-1.0" stat="none" pot="20.0" />
+            <square fd="2.0" rd="-1.0" stat="none" pot="20.0" />
+            <square fd="3.0" rd="-1.0" stat="none" pot="20.0" />
+            <square fd="4.0" rd="-1.0" stat="none" pot="20.0" />
+            <square fd="5.0" rd="-1.0" stat="none" pot="20.0" />
+            <square fd="1.0" rd="0.0" stat="none" pot="20.0" />
+            <square fd="2.0" rd="0.0" stat="none" pot="20.0" />
+            <square fd="3.0" rd="0.0" stat="none" pot="20.0" />
+            <square fd="4.0" rd="0.0" stat="none" pot="20.0" />
+            <square fd="5.0" rd="0.0" stat="none" pot="20.0" />
+            <square fd="1.0" rd="1.0" stat="none" pot="20.0" />
+            <square fd="2.0" rd="1.0" stat="none" pot="20.0" />
+            <square fd="3.0" rd="1.0" stat="none" pot="20.0" />
+            <square fd="4.0" rd="1.0" stat="none" pot="20.0" />
+            <square fd="5.0" rd="1.0" stat="none" pot="20.0" /> 
+            <square fd="1.0" rd="2.0" stat="none" pot="20.0" />
+            <square fd="2.0" rd="2.0" stat="none" pot="20.0" />
+            <square fd="3.0" rd="2.0" stat="none" pot="20.0" />
+            <square fd="4.0" rd="2.0" stat="none" pot="20.0" />
+            <square fd="5.0" rd="2.0" stat="none" pot="20.0" />         
+        </areaOfEffect>
+    </weapon>
+
+    <scroll label="Magic Missle" mpCost="2.0" range="20" ch="0x00FE" >
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="mnd" pot="2.0" /> 
+        </areaOfEffect>
+    </scroll>
+
+    <scroll label="Healing Word" mpCost="1.0" range="0"  ch="0x00FE" >
+        <selfEffects>
+            <effect stat="hp" pot="2.0" potStat="wis" />
+        </selfEffects>
+    </scroll>
+
+    <scroll label="Guiding Light" mpCost="3.0" range="20" ch="0x00FE" >
+        <selfEffects>
+            <effect stat="hp" pot="2.0" potStat="wis" />
+        </selfEffects>
+        <areaOfEffect>
+            <square fd="0.0" rd="0.0" stat="mnd" pot="1.2" /> 
+        </areaOfEffect>
+    </scroll>
+
+    <scroll label="Explosion" mpCost="5.0" range="0"  ch="0x00FE" >
+    <areaOfEffect>
+            <square fd="1.0" rd="-1.0" stat="mnd" pot="2.5" />
+            <square fd="2.0" rd="-1.0" stat="mnd" pot="2.5" />
+            <square fd="3.0" rd="-1.0" stat="mnd" pot="2.5" />
+            <square fd="1.0" rd="0.0" stat="mnd" pot="2.5" />
+            <square fd="2.0" rd="0.0" stat="mnd" pot="2.5" />
+            <square fd="3.0" rd="0.0" stat="mnd" pot="2.5" />
+            <square fd="1.0" rd="1.0" stat="mnd" pot="2.5" />
+            <square fd="2.0" rd="1.0" stat="mnd" pot="2.5" />
+            <square fd="3.0" rd="1.0" stat="mnd" pot="2.5" />        
+        </areaOfEffect>
+    </scroll>
+
+    <scroll label="Aura Burn" mpCost="2.0" range="0"  ch="0x00FE" >
+        <areaOfEffect>
+            <square fd="-1.0" rd="-1.0" stat="mnd" pot="0.6" /> 
+            <square fd="0.0" rd="-1.0" stat="mnd" pot="0.6" /> 
+            <square fd="1.0" rd="-1.0" stat="mnd" pot="0.6" /> 
+            <square fd="-1.0" rd="0.0" stat="mnd" pot="0.6" /> 
+            <square fd="0.0" rd="0.0" stat="mnd" pot="0.6" /> 
+            <square fd="-1.0" rd="0.0" stat="mnd" pot="0.6" /> 
+            <square fd="1.0" rd="0.0" stat="mnd" pot="0.6" /> 
+            <square fd="-1.0" rd="1.0" stat="mnd" pot="0.6" /> 
+            <square fd="0.0" rd="1.0" stat="mnd" pot="0.6" /> 
+            <square fd="1.0" rd="1.0" stat="mnd" pot="0.6" /> 
+        </areaOfEffect>
+    </scroll>
+</items>
