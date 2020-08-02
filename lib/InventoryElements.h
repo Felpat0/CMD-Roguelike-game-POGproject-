@@ -13,7 +13,7 @@
 #include "rapidxml/rapidxml_print.hpp"
 #include "Termcolor/termcolor.hpp"
 
-#define MIN_PLAYER_EXIT_DISTANCE 50
+#define MIN_PLAYER_EXIT_DISTANCE 0
 #define ROOMS_NUMBER 20
 #define MAX_ROOM_HEIGHT 15
 #define MAX_ROOM_WIDTH 15

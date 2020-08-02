@@ -99,8 +99,10 @@ void Game::generateMap(){
     for(int counter = 0; counter != ROOMS_NUMBER; counter ++){
         addRoom(counter + 4, "0x2593", "0x00B7");
     }
-    std::cout<<"\nDone!\nLinking rooms...";
-    linkRooms();
+    if(rooms.size() > 1){
+        std::cout<<"\nDone!\nLinking rooms...";
+        linkRooms();
+    }
     std::cout<<"\nDone!\nExporting map...";
     exportMap();
     std::cout<<"\nDone!";
@@ -1603,10 +1605,12 @@ void Game::chooseClass(){
             unsigned int tempX;
             unsigned int tempY;
             do{
+                std::cout<<"qui";
                 unsigned int tempRoomIndex = rand() % ROOMS_NUMBER;
                 tempX = rooms[tempRoomIndex]->getX() + rooms[tempRoomIndex]->getWidth() -2 - rand() % (rooms[tempRoomIndex]->getWidth() -2);
                 tempY = rooms[tempRoomIndex]->getY() + rooms[tempRoomIndex]->getHeight() -2 - rand() % (rooms[tempRoomIndex]->getHeight() -2);
             }while(getElementType(tempY, tempX) != 2 || getDistance(tempX, tempY, exitX, exitY) < MIN_PLAYER_EXIT_DISTANCE);
+            std::cout<<"ok";
             //Cycle goes on if the player is too close to the exit
             player = new Player(name, tempX, tempY, atoi(classNode->first_node("baseStats")->first_attribute("mpMax")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("hpMax")->value()), stof(classNode->first_node("baseStats")->first_attribute("str")->value()), 
