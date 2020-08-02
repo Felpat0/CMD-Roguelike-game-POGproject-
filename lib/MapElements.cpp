@@ -2008,29 +2008,45 @@ bool Game::playerOpen(char direction){
                     }else{
                         std::string choice;
                         while(true){
-                            std::cout<<"\nDo you want to use a key or perform an ability check? key/ac\n";
-                            getline(std::cin, choice);
+                            bool ac = false;
+                            if(this->getPlayer()->getKeys() > 0){
+                                std::cout<<"\nDo you want to use a key? y/n\n";
+                                getline(std::cin, choice);
 
-                            if(areStringsEqual(choice, "key")){
-                                if(this->player->getKeys() > 0){
-                                    history += "\n" + this->player->getLabel() + " opened a door using a key.";
-                                    this->player->addKeys(-1);
-                                    (**doorsIt).setLocked(false);
-                                    return true;
-                                }
-                                std::cout<<"\nYou don't have any keys.";
-                            }else if(areStringsEqual(choice, "ac")){
-                                int result = this->player->abilityCheck("str", 15);
-                                if(result >= 0){
-                                    history += "\n" + this->player->getLabel() + " opened a door.";
-                                    (**doorsIt).setLocked(false);
-                                }else{
-                                    history += "\n" + this->player->getLabel() + " failed to open a door.";
-                                    this->player->takeDamage("Door", abs((int)(result)/2));
-                                }
-                                return true;
+                                if(areStringsEqual(choice, "y")){
+                                    if(this->player->getKeys() > 0){
+                                        history += "\n" + this->player->getLabel() + " opened a door using a key.";
+                                        this->player->addKeys(-1);
+                                        (**doorsIt).setLocked(false);
+                                        return true;
+                                    }
+                                }else if(areStringsEqual(choice, "n")){
+                                ac = true;
                             }else
                                 std::cout<<"\nInsert a valid input.";
+                            }else{
+                                ac = true;
+                            }
+
+                            if(ac){
+                                std::cout<<"\nDo you want to perform an ability check on STR? y/n\n";
+                                getline(std::cin, choice);
+
+                                if(areStringsEqual(choice, "y")){
+                                    int result = this->player->abilityCheck("str", 15);
+                                    if(result >= 0){
+                                        history += "\n" + this->player->getLabel() + " opened a door.";
+                                        (**doorsIt).setLocked(false);
+                                    }else{
+                                        history += "\n" + this->player->getLabel() + " failed to open a door.";
+                                        this->player->takeDamage("Door", abs((int)(result)/2));
+                                    }
+                                    return true;
+                                }else if(areStringsEqual(choice, "n")){
+                                    return false;
+                                }else
+                                    std::cout<<"\nInsert a valid input.";
+                            }
                         }
                     }
                 }
@@ -2043,36 +2059,46 @@ bool Game::playerOpen(char direction){
             if((**it).getY() == tempI && (**it).getX() == tempJ){
                 std::string choice;
                     while(true){
-                        std::cout<<"\nDo you want to use a key or perform an ability check? key/ac\n";
-                        getline(std::cin, choice);
+                        bool ac = false;
+                        if(this->getPlayer()->getKeys() > 0){
+                            std::cout<<"\nDo you want to use a key? y/n\n";
+                            getline(std::cin, choice);
 
-                        if(areStringsEqual(choice, "key")){
-                            if(this->player->getKeys() > 0){
+                            if(areStringsEqual(choice, "y")){
                                 history += "\n" + this->player->getLabel() + " opened a chest using a key.";
                                 this->player->addInventoryElement(*it, true);
                                 this->player->addKeys(-1);
                                 items.erase(it);
                                 return true;
-                            }
-                            std::cout<<"\nYou don't have any keys.";
-                        }else if(areStringsEqual(choice, "ac")){
-                            int result = this->player->abilityCheck("dex", 15);
-                            if(result >= 0){
-                                history += "\n" + this->player->getLabel() + " opened a chest.";
-                                this->player->addInventoryElement(*it, true);
+                            }else if(areStringsEqual(choice, "n"))
+                                ac = true;
+                            else
+                                std::cout<<"\nInsert a valid input.";
+                        if(ac){
+                            std::cout<<"\nDo you want to perform an ability check on DEX? y/n\n";
+                            getline(std::cin, choice);
+
+                            if(areStringsEqual(choice, "y")){
+                                int result = this->player->abilityCheck("dex", 15);
+                                if(result >= 0){
+                                    history += "\n" + this->player->getLabel() + " opened a chest.";
+                                    this->player->addInventoryElement(*it, true);
+                                    items.erase(it);
+                                }else{
+                                    history += "\n" + this->player->getLabel() + " opened a chest but also got injured.";
+                                    this->player->takeDamage("Chest", abs(result)/3);
+                                    this->player->addInventoryElement(*it, true);
+                                    items.erase(it);
+                                }
                                 items.erase(it);
-                            }else{
-                                history += "\n" + this->player->getLabel() + " opened a chest but also got injured.";
-                                this->player->takeDamage("Chest", abs(result)/3);
-                                this->player->addInventoryElement(*it, true);
-                                items.erase(it);
-                            }
-                            items.erase(it);
-                            return true;
-                        }else{
-                            std::cout<<"\nInsert a valid input.";
+                                return true;
+                            }else if(areStringsEqual(choice, "n")){
+                                return false;
+                            }else
+                                std::cout<<"\nInsert a valid input.";
                         }
                     }
+                }
             }
             
         }
