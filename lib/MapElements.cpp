@@ -695,7 +695,7 @@ void Game::printInterface(){
     history = "";
     if(this->player->getHP() > 0){
         std::cout<<std::endl<<"What would you like to do?\nW = move north\nS = move south\nA = move ovest\nD = move east\nEquip objectIndex = equip an object, a weapon or an armor";
-        std::cout<<std::endl<<"Atk w/a/s/d = attack in the chosen direction\nUse w/a/s/d = use the equipped object in the chosen direction\nCast spellIndex w/a/s/d = cast the spell at the index spellIndex";
+        std::cout<<std::endl<<"Atk w/a/s/d = attack in the chosen direction\nUse = use the equipped object\nCast spellIndex w/a/s/d = cast the spell at the index spellIndex";
         std::cout<<std::endl<<"Open w/a/s/d = open the door in the chosen direction\nTake = loot the surrounding items\nDiscard objectIndex = discard the object at the index objectIndex";
         std::cout<<std::endl<<"Identify objectIndex = show the description of the object at the index objectIndex\nRange objectIndex w/a/s/d = show the range in the choosen direction of the object at the index objectIndex\n";
     }
@@ -1605,12 +1605,10 @@ void Game::chooseClass(){
             unsigned int tempX;
             unsigned int tempY;
             do{
-                std::cout<<"qui";
                 unsigned int tempRoomIndex = rand() % ROOMS_NUMBER;
                 tempX = rooms[tempRoomIndex]->getX() + rooms[tempRoomIndex]->getWidth() -2 - rand() % (rooms[tempRoomIndex]->getWidth() -2);
                 tempY = rooms[tempRoomIndex]->getY() + rooms[tempRoomIndex]->getHeight() -2 - rand() % (rooms[tempRoomIndex]->getHeight() -2);
             }while(getElementType(tempY, tempX) != 2 || getDistance(tempX, tempY, exitX, exitY) < MIN_PLAYER_EXIT_DISTANCE);
-            std::cout<<"ok";
             //Cycle goes on if the player is too close to the exit
             player = new Player(name, tempX, tempY, atoi(classNode->first_node("baseStats")->first_attribute("mpMax")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("hpMax")->value()), stof(classNode->first_node("baseStats")->first_attribute("str")->value()), 
@@ -1628,7 +1626,6 @@ void Game::chooseClass(){
             player->setUpRes(stof(classNode->first_node("levelUpStats")->first_attribute("res")->value()));
             player->setUpMovT(stof(classNode->first_node("levelUpStats")->first_attribute("movT")->value()));
             player->setUpActT(stof(classNode->first_node("levelUpStats")->first_attribute("actT")->value()));
-            
             
             for(xml_node<>* equipNode = classNode->first_node("startingEquipment")->first_node(); equipNode; equipNode = equipNode->next_sibling()){
                 //Give player his starting weapons
@@ -2110,35 +2107,31 @@ bool Game::playerOpen(char direction){
     return false;
 }
 
-bool Game::playerUse(unsigned int index){
-    //Check if the index is valid
-    if(!this->player->getInventorySize() > index){
-        std::cout<<"\nThere is no item at this index.";
+bool Game::playerUse(){
+    bool found = false;
+    unsigned int index;
+    for(int i = 0; i != player->getInventorySize(); i++){
+        if(player->getInventoryElementAt(i).getIsEquipped() && (areStringsEqual(this->player->getInventoryElementAt(i).getType(), "herb")
+        || areStringsEqual(this->player->getInventoryElementAt(i).getType(), "potion"))){
+            found = true;
+            index = i;
+        }
+    }
+    if(!found){
+        std::cout<<"\nYou don't have an equipped item.\n";
         fflush(stdin);
-        system("pause");
-        return false;
-    }else if(!this->getPlayer()->getInventoryElementAt(index).getIsIdentified() && !areStringsEqual(this->player->getInventoryElementAt(index).getType(), "herb")){
-        //Check if the item has been identified
-        std::cout<<"\nThis item has to be identified first. Press enter to retry.\n";
         system("pause");
         return false;
     }else{
-        if(areStringsEqual(this->player->getInventoryElementAt(index).getType(), "herb")
-        || areStringsEqual(this->player->getInventoryElementAt(index).getType(), "potion")){
-            std::vector<Effect> t = this->player->getInventoryElementAt(index).getEffects();
-            std::vector<Effect>::iterator it = t.begin();
-            std::vector<Effect>::iterator end = t.end();
-            history += "\n" + this->player->getLabel() + " used " + this->player->getInventoryElementAt(index).getLabel() + ".";
-            for(it; it != end; it++){
-                this->getPlayer()->applyEffect(*it);
-            }
-            this->player->discardItem(index);
-            return true;
+        std::vector<Effect> t = this->player->getInventoryElementAt(index).getEffects();
+        std::vector<Effect>::iterator it = t.begin();
+        std::vector<Effect>::iterator end = t.end();
+        history += "\n" + this->player->getLabel() + " used " + this->player->getInventoryElementAt(index).getLabel() + ".";
+        for(it; it != end; it++){
+            this->getPlayer()->applyEffect(*it);
         }
-        std::cout<<"\nYou can't use this item.";
-        fflush(stdin);
-        system("pause");
-        return false;
+        this->player->discardItem(index);
+        return true;
     }
 
     return false;

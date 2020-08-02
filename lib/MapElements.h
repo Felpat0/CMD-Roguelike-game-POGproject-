@@ -150,7 +150,7 @@ class Game{
     void playerAttack(char direction); //Manage the "atk" command
     void playerAOE(Square effect, unsigned int damage, unsigned int range, int iInc, int jInc); //Manage the AOE effects of weapons and scrolls
     bool playerOpen(char direction); //Manage the "open" command
-    bool playerUse(unsigned int index); //Manage the "use" command
+    bool playerUse(); //Manage the "use" command
 
     void getBestiary();
     void getItems();

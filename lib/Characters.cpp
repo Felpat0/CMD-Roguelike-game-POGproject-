@@ -99,21 +99,21 @@ void Character::healDamage(unsigned int heal){
 }
 
 void Character::applySelfEffect(SelfEffect e){
-    int value = (int)((this->getStat(e.getPotStat())) * e.getPot());
+    float value = ((this->getStat(e.getPotStat())) * e.getPot());
     if(areStringsEqual(e.getStat(), "hp")){
         if(value > 0)
-            this->healDamage(value);
+            this->healDamage((int)value);
         else if(value < 0)
-            this->takeDamage("Effect", abs(value));
+            this->takeDamage("Effect", abs((int)value));
     }else if(areStringsEqual(e.getStat(), "maxHp")){
         //If the player has full health, his current hp raise with the maxHp
         if(this->maxHp == this->hp)
-            this->hp += value;
-        this->maxHp += value;
+            this->hp += (int)value;
+        this->maxHp += (int)value;
         history += "\nMax hp of " + this->getLabel() + ": ";
         if(value > 0)
             history += "+";
-        history += std::to_string(value);
+        history += std::to_string((int)value);
     }else if(areStringsEqual(e.getStat(), "str")){
         this->str += value;
         history += "\nStrength (STR) of " + this->getLabel() + ": ";
@@ -160,21 +160,21 @@ void Character::applySelfEffect(SelfEffect e){
 }
 
 void Character::applyEffect(Effect e){
-    int value = (int) e.getValue();
+    float value = e.getValue();
     if(areStringsEqual(e.getStat(), "hp")){
         if(value > 0)
-            this->healDamage(value);
+            this->healDamage((int)value);
         else if(value < 0)
-            this->takeDamage("Effect", abs(value));
+            this->takeDamage("Effect", abs((int)value));
     }else if(areStringsEqual(e.getStat(), "maxHp")){
         //If the player has full health, his current hp raise with the maxHp
         if(this->maxHp == this->hp)
-            this->hp += value;
-        this->maxHp += value;
+            this->hp += (int)value;
+        this->maxHp += (int)value;
         history += "\nMax hp of " + this->getLabel() + ": ";
         if(value > 0)
             history += "+";
-        history += std::to_string(value);
+        history += std::to_string((int)value);
     }else if(areStringsEqual(e.getStat(), "str")){
         this->str += value;
         history += "\nStrength (STR) of " + this->getLabel() + ": ";
@@ -284,7 +284,7 @@ int Player::input(std::string command){
             //Attack
             return 3;
         }
-    }else if(command.length() == 5 && areStringsEqual(command.substr(0, 3), "use") && isdigit(command[4])){
+    }else if(command.length() == 3 && areStringsEqual(command.substr(0, 3), "use")){
         //Use item
         return 5;
     }else if(command.length() == 8 && areStringsEqual(command.substr(0, 4), "cast") && isdigit(command[5])){
@@ -341,16 +341,21 @@ void Player::addInventoryElement(std::unique_ptr<InventoryElement>& element, boo
             history += "\n" + this->getLabel() + " picked up " + element->getLabel() + " keys.";
         this->addKeys(atoi(element->getLabel().c_str()));
     }else{
+        bool identify = false;;
         element->setX(0);
         element->setY(0);
         if(areStringsEqual(element->getType(), "herb")){
+            if(!element->getIsIdentified())
+                identify = true;
             if(viewInHistory)
                 history += "\n" + this->getLabel() + " picked up an herb.";
         }else{
             if(viewInHistory)
                 history += "\n" + this->getLabel() + " picked up an item.";
-        }
-        this->inventoryElements.push_back(std::move(element));
+        }   
+        this->inventoryElements.push_back(std::move(element));  
+        if(identify)
+            identifyItem(inventoryElements.size() -1);   
     }
 }
 
@@ -376,11 +381,17 @@ bool Player::disequipItem(unsigned int index){
             std::vector<Effect>::iterator end2 = temp.end();
             for(it2; it2 != end2; it2++){
                 if(areStringsEqual(it2->getStat(), "hp"))
-                    this->healDamage(it2->getValue());
+                    this->hp -= ((int)it2->getValue());
                 else if(areStringsEqual(it2->getStat(), "maxHp")){
-                    this->maxHp -= it2->getValue();
+                    this->maxHp -= (int)it2->getValue();
                     if(this->hp > this->maxHp)
                         this->hp = this->maxHp;
+                }else if(areStringsEqual(it2->getStat(), "mp"))
+                    this->mp -= (int)it2->getValue();
+                else if(areStringsEqual(it2->getStat(), "maxMp")){
+                    this->maxMp -= (int)it2->getValue();
+                    if(this->mp > this->maxMp)
+                        this->mp = this->maxMp;
                 }else if(areStringsEqual(it2->getStat(), "str"))
                     this->str -= it2->getValue();
                 else if(areStringsEqual(it2->getStat(), "dex"))
@@ -412,15 +423,15 @@ bool Player::equipItem(unsigned int index){
         return false;
     }
     //If the item has not been identified, return false
-    if(!this->inventoryElements.at(index)->getIsIdentified()){
+    if(!this->inventoryElements.at(index)->getIsIdentified() && areStringsEqual(this->inventoryElements.at(index)->getType(), "herb")){
         std::cout<<"\nThis item has to be identified first. Press enter to continue.\n";
         fflush(stdin);
         system("pause");
         return false;
     }
     //If the item is already equipped or can't be equipped, return false
-    if(this->inventoryElements.at(index)->getIsEquipped() || (!areStringsEqual(this->inventoryElements.at(index)->getType(), "weapon") && !areStringsEqual(this->inventoryElements.at(index)->getType(), "protection"))){
-        std::cout<<"\nThe chosen item is already equipped or can't be equipped. Press enter to continue.\n";
+    if(this->inventoryElements.at(index)->getIsEquipped()){
+        std::cout<<"\nThe chosen item is already equipped. Press enter to continue.\n";
         fflush(stdin);
         system("pause");
         return false;
@@ -454,7 +465,10 @@ bool Player::equipItem(unsigned int index){
 bool Player::discardItem(unsigned int index){
     if(inventoryElements.size() > index){
         if(inventoryElements.at(index)->getIsEquipped()){
-            this->disequipItem(index);
+            std::cout<<"\nYou can't discard an equipped item.\n";
+            fflush(stdin);
+            system("pause");
+            return false;
         }
         inventoryElements.erase(inventoryElements.begin() + index);
         return true;

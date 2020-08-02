@@ -105,7 +105,7 @@ int main(){
                         break;
                     case 5:
                         //Use item
-                        if(game.playerUse(choice[4] - '0'))
+                        if(game.playerUse())
                             game.lapsedTime += game.getPlayer()->getActTime();
                        break;
                     case 6:
