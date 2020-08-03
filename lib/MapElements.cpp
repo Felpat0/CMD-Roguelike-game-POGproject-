@@ -1721,8 +1721,24 @@ void Game::moveEnemies(){
             }
             //If player is in sight range, move towards him
             else if(getDistance((**it), *player) <= (**it).getSightRange()){
-                walkShortestPath(**it, this->player->getX(), this->player->getY());
-                (**it).setNextActTime(this->lapsedTime + (**it).getMovTime());
+                //Check available directions
+                std::vector<unsigned int> directions;
+                if(isWalkable((**it).getX(), (**it).getY() -1)){
+                    directions.push_back(1);
+                }
+                if(isWalkable((**it).getX(), (**it).getY() +1)){
+                    directions.push_back(2);
+                }
+                if(isWalkable((**it).getX() -1, (**it).getY())){
+                    directions.push_back(3);
+                }
+                if(isWalkable((**it).getX() +1, (**it).getY())){
+                    directions.push_back(4);
+                }
+                if(directions.size() > 0){
+                    walkShortestPath(**it, this->player->getX(), this->player->getY());
+                    (**it).setNextActTime(this->lapsedTime + (**it).getMovTime());
+                }
             }
             //If none, just move randomly
             else{
@@ -1958,7 +1974,7 @@ void Game::playerAttack(char direction){
 
 }
 
-void Game::playerAOE(Square effect, unsigned int damage, unsigned int range, int iInc, int jInc){
+void Game::playerAOE(Square& effect, unsigned int damage, unsigned int range, int iInc, int jInc){
     unsigned int tempI = this->player->getY();
     unsigned int tempJ = this->player->getX();
     //Go to the origin point
@@ -2080,6 +2096,11 @@ bool Game::playerOpen(char direction){
         }
     }else if(getElementType(this->player->getY() + iInc, this->player->getX() + jInc) == 7){
         //It's a chest
+        if(player->getInventorySize() > 9){
+            std::cout<<"\nYour inventory is full.";
+            system("pause");
+            return false;
+        }
         std::vector<std::unique_ptr<InventoryElement>>::iterator end = items.end();
         for (std::vector<std::unique_ptr<InventoryElement>>::iterator it = items.begin(); it != end; it++ ){
             if((**it).getY() == tempI && (**it).getX() == tempJ){
@@ -2091,8 +2112,13 @@ bool Game::playerOpen(char direction){
                             getline(std::cin, choice);
 
                             if(areStringsEqual(choice, "y")){
+                                std::string type = (**it).getType();
                                 history += "\n" + this->player->getLabel() + " opened a chest using a key.";
-                                this->player->addInventoryElement(*it, true);
+                                if(areStringsEqual(type, "weapon") || areStringsEqual(type, "scroll")){
+                                        playerAddFromChest((**it).getLabel(), type);
+                                    }else
+                                        this->player->addInventoryElement(*it, true);
+                                    items.erase(it);
                                 this->player->addKeys(-1);
                                 items.erase(it);
                                 return true;
@@ -2109,16 +2135,24 @@ bool Game::playerOpen(char direction){
                             if(areStringsEqual(choice, "y")){
                                 int result = this->player->abilityCheck("dex", 15);
                                 if(result >= 0){
+                                    std::string type = (**it).getType();
                                     history += "\n" + this->player->getLabel() + " opened a chest.";
-                                    this->player->addInventoryElement(*it, true);
+                                    if(areStringsEqual(type, "weapon") || areStringsEqual(type, "scroll")){
+                                        playerAddFromChest((**it).getLabel(), type);
+                                    }else
+                                        this->player->addInventoryElement(*it, true);
                                     items.erase(it);
+                                    
                                 }else{
+                                    std::string type = (**it).getType();
                                     history += "\n" + this->player->getLabel() + " opened a chest but also got injured.";
                                     this->player->takeDamage("Chest", abs(result)/3);
-                                    this->player->addInventoryElement(*it, true);
+                                    if(areStringsEqual(type, "weapon") || areStringsEqual(type, "scroll")){
+                                        playerAddFromChest((**it).getLabel(), type);
+                                    }else
+                                        this->player->addInventoryElement(*it, true);
                                     items.erase(it);
                                 }
-                                items.erase(it);
                                 return true;
                             }else if(areStringsEqual(choice, "n")){
                                 return false;
@@ -2138,17 +2172,34 @@ bool Game::playerOpen(char direction){
     return false;
 }
 
+bool Game::playerAddFromChest(std::string label, std::string type){
+    if(areStringsEqual(type, "weapon")){
+        std::vector<Weapon>::iterator it = inventoryWeapons.begin();
+        std::vector<Weapon>::iterator end = inventoryWeapons.end();
+        for(it; it != end; it ++){
+            if(areStringsEqual(it->getLabel(), label)){
+                player->addInventoryWeapon(*it, true);
+                return true;
+            }
+        }
+    }else if(areStringsEqual(type, "scroll")){
+        std::vector<Scroll>::iterator it = inventoryScrolls.begin();
+        std::vector<Scroll>::iterator end = inventoryScrolls.end();
+        for(it; it != end; it ++){
+            if(areStringsEqual(it->getLabel(), label)){
+                player->addInventoryScroll(*it, true);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool Game::playerUse(){
     bool found = false;
     unsigned int index;
-    for(int i = 0; i != player->getInventorySize(); i++){
-        if(player->getInventoryElementAt(i).getIsEquipped() && (areStringsEqual(this->player->getInventoryElementAt(i).getType(), "herb")
-        || areStringsEqual(this->player->getInventoryElementAt(i).getType(), "potion"))){
-            found = true;
-            index = i;
-        }
-    }
-    if(!found){
+    index = player->getEquippedItemIndex();
+    if(index == -1){
         std::cout<<"\nYou don't have an equipped item.\n";
         fflush(stdin);
         system("pause");
@@ -2599,7 +2650,7 @@ void Game::printRange(std::vector<Square> areasOfEffect, unsigned int range, cha
     system("pause");
 }
 
-void Game::checkBox(std::shared_ptr<Box> current, std::shared_ptr<Box> temp, std::vector<std::shared_ptr<Box>>& openList, std::vector<std::shared_ptr<Box>>& closedList, unsigned int targetX, unsigned int targetY){
+void Game::checkBox(std::shared_ptr<Box>& current, std::shared_ptr<Box>& temp, std::vector<std::shared_ptr<Box>>& openList, std::vector<std::shared_ptr<Box>>& closedList, unsigned int targetX, unsigned int targetY){
     //Check if temp is in the closedList
     bool closed = false;
     std::vector<std::shared_ptr<Box>>::iterator it = closedList.begin();

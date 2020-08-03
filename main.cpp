@@ -31,18 +31,14 @@ int main(){
         std::cout<<"\nDone!\n";
         game.chooseClass();
     }
-
-
-    
     //Game loop
     gameState = 0; //1=lost, 2=won
     int error = 0;
     
     unsigned int actionType;
-    //system("cls");
+    system("cls");
     while(gameState == 0){
         do{
-            
             //Clear the fog around the player
             game.clearFog();
             system("cls");

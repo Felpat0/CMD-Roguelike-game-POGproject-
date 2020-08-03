@@ -248,6 +248,18 @@ int Player::getEquippedWeaponIndex(){
     return -1;
 }
 
+int Player::getEquippedItemIndex(){
+    std::vector<std::unique_ptr<InventoryElement>>::iterator it = inventoryElements.begin();
+    std::vector<std::unique_ptr<InventoryElement>>::iterator end = inventoryElements.end();
+    bool ok = true;
+    for(it; it != end; it ++){
+        if((**it).getIsEquipped() && (areStringsEqual((**it).getType(), "herb") || areStringsEqual((**it).getType(), "potion"))){
+            return it - inventoryElements.begin();
+        }
+    }
+    return -1;
+}
+
 unsigned int Player::getLvl() const{return this->lvl;}
 unsigned int Player::getMaxMP()const{return this->maxMp;}
 unsigned int Player::getMP()const{return this->mp;}
@@ -355,8 +367,34 @@ void Player::addInventoryElement(std::unique_ptr<InventoryElement>& element, boo
         }   
         this->inventoryElements.push_back(std::move(element));  
         if(identify)
-            identifyItem(inventoryElements.size() -1);   
+            identifyItem(inventoryElements.end() - inventoryElements.begin() - 1);   
     }
+}
+
+void Player::addInventoryWeapon(Weapon& element, bool viewInHistory){
+    bool identify = false;
+    element.setX(0);
+    element.setY(0);
+    if(areStringsEqual(element.getType(), "herb")){
+        if(!element.getIsIdentified())
+            identify = true;
+        if(viewInHistory)
+            history += "\n" + this->getLabel() + " picked up an herb.";
+    }else{
+        if(viewInHistory)
+            history += "\n" + this->getLabel() + " picked up an item.";
+    }
+    this->inventoryElements.push_back(std::make_unique<Weapon>(element));  
+}
+
+void Player::addInventoryScroll(Scroll& element, bool viewInHistory){
+    bool identify = false;
+    element.setX(0);
+    element.setY(0);
+    if(viewInHistory)
+        history += "\n" + this->getLabel() + " picked up an item.";
+    std::unique_ptr<Scroll> t (std::make_unique<Scroll>(element));
+    this->inventoryElements.push_back(std::move(t));  
 }
 
 void Player::reduceWeaponDurability(unsigned int index){
@@ -445,7 +483,7 @@ bool Player::equipItem(unsigned int index){
     std::vector<std::unique_ptr<InventoryElement>>::iterator it = inventoryElements.begin();
     std::vector<std::unique_ptr<InventoryElement>>::iterator end = inventoryElements.end();
     for(it; it != end; it ++){
-        if((**it).getType() == this->inventoryElements.at(index)->getType()){
+        if((**it).getType() == this->inventoryElements.at(index)->getType() || ((areStringsEqual((**it).getType(), "herb")|| areStringsEqual((**it).getType(), "potion")) && (areStringsEqual(this->inventoryElements.at(index)->getType(), "herb")|| areStringsEqual(this->inventoryElements.at(index)->getType(), "potion")))){
             disequipItem(it - inventoryElements.begin());
         }
     }
@@ -490,9 +528,9 @@ bool Player::identifyItem(unsigned int index){
         return false;
     }else if(inventoryElements.at(index)->getIsIdentified()){
         if(areStringsEqual(inventoryElements.at(index)->getType(), "weapon")){
-            history += this->getWeaponAt(index).getDescription();
+            history += static_cast<Weapon*>(inventoryElements.at(index).get())->getDescription();
         }else if(areStringsEqual(inventoryElements.at(index)->getType(), "scroll")){
-            history += this->getScrollAt(index).getDescription();
+            history += static_cast<Scroll*>(inventoryElements.at(index).get())->getDescription();
         }else{
             history += this->inventoryElements.at(index)->getDescription();
         }
@@ -508,12 +546,13 @@ bool Player::identifyItem(unsigned int index){
         //Succesfull ability check
         inventoryElements.at(index)->setIdentified(true);
         if(areStringsEqual(inventoryElements.at(index)->getType(), "weapon")){
-            history += this->getWeaponAt(index).getDescription();
+            history += static_cast<Weapon*>(inventoryElements.at(index).get())->getDescription();
         }else if(areStringsEqual(inventoryElements.at(index)->getType(), "scroll")){
-            history += this->getScrollAt(index).getDescription();
+        history += static_cast<Scroll*>(inventoryElements.at(index).get())->getDescription();
         }else{
             history += this->inventoryElements.at(index)->getDescription();
         }
+        
     }else if(result < -10){
         //Hard failure
         history += "\n" + this->label + " hard failed the identification, the item at index " + std::to_string(index) + " is no more identifiable.";
@@ -537,9 +576,9 @@ void Player::addKeys(int keys){this->keys += keys;}
 void Player::setMp(unsigned int mp){this->mp = mp;}
 void Player::levelUp(){
     this->lvl += 1;
-    if(this->hp == this->maxHp) 
-        this->hp += upHpMax;
+    this->hp += upHpMax;
     this->maxHp += this->upHpMax;
+    this->mp += this->upMpMax;
     this->maxMp += this->upMpMax;
     this->str += this->upStr;
     this->dex += this->upDex;

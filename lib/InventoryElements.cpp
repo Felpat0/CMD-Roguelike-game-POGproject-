@@ -192,7 +192,7 @@ std::string Scroll::getDescription(){
         description += "\nThe spell has AOE effects.";
     else if(this->areasOfEffect.size() == 1)
         description += "\nThe spell hits only one enemy.";
-
+    std::cout<<"Size: "<<this->selfEffects.size();
     if(this->selfEffects.size() > 0){
         std::vector<SelfEffect>::iterator it = this->selfEffects.begin();
         std::vector<SelfEffect>::iterator end = this->selfEffects.end();

@@ -147,8 +147,9 @@ class Game{
     void playerLoot(); //Manage the "take" command
     bool playerCastSpell(char direction, unsigned int index); //Manage the "cast" command
     void playerAttack(char direction); //Manage the "atk" command
-    void playerAOE(Square effect, unsigned int damage, unsigned int range, int iInc, int jInc); //Manage the AOE effects of weapons and scrolls
+    void playerAOE(Square& effect, unsigned int damage, unsigned int range, int iInc, int jInc); //Manage the AOE effects of weapons and scrolls
     bool playerOpen(char direction); //Manage the "open" command
+    bool playerAddFromChest(std::string label, std::string type);
     bool playerUse(); //Manage the "use" command
 
     void getBestiary();
@@ -157,7 +158,7 @@ class Game{
     void printUnicode(std::string character, unsigned int color) const;
     void printRange(std::vector<Square> areasOfEffect, unsigned int range, char direction);
 
-    void checkBox(std::shared_ptr<Box> current, std::shared_ptr<Box> temp, std::vector<std::shared_ptr<Box>>& openList, std::vector<std::shared_ptr<Box>>& closedList, unsigned int targetX, unsigned int targetY);
+    void checkBox(std::shared_ptr<Box>& current, std::shared_ptr<Box>& temp, std::vector<std::shared_ptr<Box>>& openList, std::vector<std::shared_ptr<Box>>& closedList, unsigned int targetX, unsigned int targetY);
     void walkShortestPath(Character& c, unsigned int targetX, unsigned int targetY); //Moves the passed character according to the A* Algorithm
 };
 

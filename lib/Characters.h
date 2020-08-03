@@ -81,6 +81,7 @@ class Player : public Character{
     float movTime, float actTime, std::string playerClass, std::string ch);
     
     int getEquippedWeaponIndex(); //-1 = none
+    int getEquippedItemIndex(); //-1 = none
     unsigned int getLvl() const;
     unsigned int getMP() const;
     unsigned int getMaxMP() const;
@@ -106,6 +107,8 @@ class Player : public Character{
     int input(const std::string command);
     void setMovementIntention(const std::string direction);
     void addInventoryElement(std::unique_ptr<InventoryElement>& element, bool viewInHistory);
+    void addInventoryWeapon(Weapon& element, bool viewInHistory);
+    void addInventoryScroll(Scroll& element, bool viewInHistory);
     void reduceWeaponDurability(unsigned int index);
     bool disequipItem(unsigned int index);
     bool equipItem(unsigned int index);
