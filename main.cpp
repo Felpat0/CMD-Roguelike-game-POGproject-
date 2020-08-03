@@ -172,7 +172,7 @@ int main(){
         if(game.player->getX() == game.getExitX() &&  game.player->getY() == game.getExitY()){
             gameState = 2;
             break;
-        } 
+        }
         //Move enemies
         if(game.lapsedTime > 0)
             game.moveEnemies();
