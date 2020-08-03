@@ -91,7 +91,6 @@ class Game{
     int exitY;
 
 
-    Player* player;
 
     bool fogMatrix[MAX_MATRIX_HEIGHT][MAX_MATRIX_WIDTH];
     int m[MAX_MATRIX_HEIGHT][MAX_MATRIX_WIDTH];
@@ -111,10 +110,10 @@ class Game{
     std::string chFog;
 
     public:
+    std::unique_ptr<Player> player;
     float lapsedTime;
     Game();
     //~Game();
-    Player* getPlayer() const;
     unsigned int getExitX() const;
     unsigned int getExitY() const;
     void generateMap();

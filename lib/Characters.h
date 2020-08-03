@@ -109,7 +109,7 @@ class Player : public Character{
     void reduceWeaponDurability(unsigned int index);
     bool disequipItem(unsigned int index);
     bool equipItem(unsigned int index);
-    bool discardItem(unsigned int index);
+    bool discardItem(unsigned int index, bool check);
     bool identifyItem(unsigned int index);
     void addGold(unsigned int gold);
     void addExp(unsigned int exp);

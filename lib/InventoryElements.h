@@ -8,6 +8,8 @@
 #include <memory>
 #include <fstream>
 #include <ctype.h>
+#include <Windows.h>
+#include <limits>
 
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_print.hpp"

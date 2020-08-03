@@ -1,5 +1,4 @@
 #include "MapElements.h"
-#include <map> 
 
 //DOOR SECTION
 //Door constructor
@@ -86,8 +85,6 @@ Game::Game(){
 }
 
 //Game functions
-
-Player* Game::getPlayer() const{return this->player;}
 unsigned int Game::getExitX() const{return this->exitX;}
 unsigned int Game::getExitY() const{return this->exitY;}
 
@@ -425,7 +422,7 @@ void Game::exportMap(){
                 attr = wdoc.allocate_attribute("y", wdoc.allocate_string(to_string(tempY - (**it).getY()).c_str()));
                 chest->append_attribute(attr);
                 //Decide what will the chest contain
-                switch (rand() % 2)
+                switch (rand() % 5)
                 {
                 case 0:
                     //GP
@@ -440,6 +437,39 @@ void Game::exportMap(){
                     chest->append_attribute(attr);
                     attr = wdoc.allocate_attribute("label", wdoc.allocate_string(to_string((rand()%MAX_CHEST_KEYS - MIN_CHEST_KEYS + 1) + MIN_CHEST_KEYS).c_str()));
                     chest->append_attribute(attr);
+                    break;
+                case 2:
+                    //It's a weapon
+                    if(inventoryWeapons.size() > 0){
+                        attr = wdoc.allocate_attribute("type", wdoc.allocate_string("weapon"));
+                        chest->append_attribute(attr);
+                        //Decide randomly what weapon the item is
+                        int itemIndex = rand() % inventoryWeapons.size();
+                        attr = wdoc.allocate_attribute("label", wdoc.allocate_string(inventoryWeapons.at(itemIndex).getLabel().c_str()));
+                        chest->append_attribute(attr);
+                    }
+                    break;
+                case 3:
+                    //It's a scroll
+                    if(inventoryScrolls.size() > 0){
+                        attr = wdoc.allocate_attribute("type", wdoc.allocate_string("scroll"));
+                        chest->append_attribute(attr);
+                        //Decide randomly what weapon the item is
+                        int itemIndex = rand() % inventoryScrolls.size();
+                        attr = wdoc.allocate_attribute("label", wdoc.allocate_string(inventoryScrolls.at(itemIndex).getLabel().c_str()));
+                        chest->append_attribute(attr);
+                    }
+                    break;
+                case 4:
+                    //It's an item
+                    if(inventoryItems.size() > 0){
+                        //Decide randomly what item it is
+                        int itemIndex = rand() % inventoryItems.size();
+                        attr = wdoc.allocate_attribute("type", wdoc.allocate_string(inventoryItems.at(itemIndex).getType().c_str()));
+                        chest->append_attribute(attr);
+                        attr = wdoc.allocate_attribute("label", wdoc.allocate_string(inventoryItems.at(itemIndex).getLabel().c_str()));
+                        chest->append_attribute(attr);
+                    }
                     break;
                 default:
                     break;
@@ -645,35 +675,34 @@ void Game::printInterface(){
                     std::cout<<"GP: "<<player->getGp();
                     std::cout<<"    ";
                     std::cout<<"Keys: "<<player->getKeys();
-                    break;
-                case 9:
+                    std::cout<<"    ";
                     std::cout<<"LapsedTime: "<<lapsedTime;
                     break;
-                case 11:
+                case 10:
                     std::cout<<"Inventory";
                     break;
             default:
-                if(y >= 12 && y <= 21){
-                    std::cout<<y-12;
-                    if(y-12 < player->getInventorySize()){
-                        if(player->getInventoryElementAt(y-12).getIsEquipped()){
+                if(y >= 11 && y <= 20){
+                    std::cout<<y-11;
+                    if(y-11 < player->getInventorySize()){
+                        if(player->getInventoryElementAt(y-11).getIsEquipped()){
                             std::cout<<termcolor::yellow<<" E : ";
                         }else
                             std::cout<<"   : ";
-                        if(player->getInventoryElementAt(y-12).getIsIdentified()){
-                            if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "herb"))
-                                std::cout<<termcolor::green<<player->getInventoryElementAt(y-12).getLabel();
-                            else if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "potion"))
-                                std::cout<<termcolor::blue<<player->getInventoryElementAt(y-12).getLabel();
-                            else if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "weapon")){
-                                std::cout<<termcolor::yellow<<player->getInventoryElementAt(y-12).getLabel();
-                                if(player->getWeaponAt(y-12).getDurability() > 0)
-                                    std::cout<<" ("<<player->getWeaponAt(y-12).getDurability()<<")";
-                            }else if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "protection"))
-                                std::cout<<termcolor::white<<player->getInventoryElementAt(y-12).getLabel();
-                            else if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "scroll"))
-                                std::cout<<termcolor::magenta<<player->getInventoryElementAt(y-12).getLabel();
-                        }else if(areStringsEqual(player->getInventoryElementAt(y-12).getType(), "herb"))
+                        if(player->getInventoryElementAt(y-11).getIsIdentified()){
+                            if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "herb"))
+                                std::cout<<termcolor::green<<player->getInventoryElementAt(y-11).getLabel();
+                            else if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "potion"))
+                                std::cout<<termcolor::blue<<player->getInventoryElementAt(y-11).getLabel();
+                            else if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "weapon")){
+                                std::cout<<termcolor::yellow<<player->getInventoryElementAt(y-11).getLabel();
+                                if(player->getWeaponAt(y-11).getDurability() > 0)
+                                    std::cout<<" ("<<player->getWeaponAt(y-11).getDurability()<<")";
+                            }else if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "protection"))
+                                std::cout<<termcolor::white<<player->getInventoryElementAt(y-11).getLabel();
+                            else if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "scroll"))
+                                std::cout<<termcolor::magenta<<player->getInventoryElementAt(y-11).getLabel();
+                        }else if(areStringsEqual(player->getInventoryElementAt(y-11).getType(), "herb"))
                             std::cout<<termcolor::green<<"Unidentified herb";
                         else
                             std::cout<<"???";
@@ -1610,12 +1639,12 @@ void Game::chooseClass(){
                 tempY = rooms[tempRoomIndex]->getY() + rooms[tempRoomIndex]->getHeight() -2 - rand() % (rooms[tempRoomIndex]->getHeight() -2);
             }while(getElementType(tempY, tempX) != 2 || getDistance(tempX, tempY, exitX, exitY) < MIN_PLAYER_EXIT_DISTANCE);
             //Cycle goes on if the player is too close to the exit
-            player = new Player(name, tempX, tempY, atoi(classNode->first_node("baseStats")->first_attribute("mpMax")->value()), 
+            player = std::make_unique<Player>(Player(name, tempX, tempY, atoi(classNode->first_node("baseStats")->first_attribute("mpMax")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("hpMax")->value()), stof(classNode->first_node("baseStats")->first_attribute("str")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("dex")->value()), stof(classNode->first_node("baseStats")->first_attribute("mnd")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("wis")->value()), stof(classNode->first_node("baseStats")->first_attribute("res")->value()), 
             stof(classNode->first_node("baseStats")->first_attribute("movT")->value()), stof(classNode->first_node("baseStats")->first_attribute("actT")->value()), 
-            temp, "0x0050");
+            temp, "0x0050"));
             //Set level up stats
             player->setUpHpMax(stof(classNode->first_node("levelUpStats")->first_attribute("hpMax")->value()));
             player->setUpMpMax(stof(classNode->first_node("levelUpStats")->first_attribute("mpMax")->value()));
@@ -1793,7 +1822,7 @@ int Game::getScrollIndexAtPosition(unsigned int i, unsigned int j){
 void Game::playerLoot(){
     for(int i = -1; i != 2; i++){
         for(int j = -1; j != 2; j++){
-            if(getPlayer()->getInventorySize() < 10){
+            if(player->getInventorySize() < 10){
                 if(i != 0 || j != 0){
                     unsigned int tempX = player->getX() + j;
                     unsigned int tempY = player->getY() + i;
@@ -1828,39 +1857,39 @@ void Game::playerLoot(){
                 break;
             }
         }
-        if(getPlayer()->getInventorySize() >= 10)
+        if(player->getInventorySize() >= 10)
             break;
     }
 }
 
 bool Game::playerCastSpell(char direction, unsigned int index){
-    if(index >= this->getPlayer()->getInventorySize()){
+    if(index >= this->player->getInventorySize()){
         std::cout<<"\nThe index is not valid. Press enter to continue\n";
         fflush(stdin);
         system("pause");
         return false;
-    }else if(!this->getPlayer()->getInventoryElementAt(index).getIsIdentified()){
+    }else if(!this->player->getInventoryElementAt(index).getIsIdentified()){
         //Check if the item has been identified
         std::cout<<"\nThis item has to be identified first. Press enter to continue.\n";
         system("pause");
         return false;
-    }else if(!areStringsEqual(this->getPlayer()->getInventoryElementAt(index).getType(), "scroll")){
+    }else if(!areStringsEqual(this->player->getInventoryElementAt(index).getType(), "scroll")){
         //Check if the item is a scroll
         std::cout<<"\nThis item is not a scroll. Press enter to continue.\n";
         system("pause");
         return false;
     }else{
         //Check if player has enough mana
-        if(this->getPlayer()->getMP() - this->getPlayer()->getScrollAt(index).getMpCost() < 0){
+        if(this->player->getMP() - this->player->getScrollAt(index).getMpCost() < 0){
             std::cout<<"\nYOU HAVE NO MANA!!!";
             system("pause");
             return false;
         }
         //Decrease player's mana
-        this->getPlayer()->setMp(this->getPlayer()->getMP() - this->getPlayer()->getScrollAt(index).getMpCost());
-        history += "\n" + this->getPlayer()->getLabel() + " used the scroll " + this->getPlayer()->getInventoryElementAt(index).getLabel() + ".";
-        unsigned int tempI = this->getPlayer()->getY();
-        unsigned int tempJ = this->getPlayer()->getX();
+        this->player->setMp(this->player->getMP() - this->player->getScrollAt(index).getMpCost());
+        history += "\n" + this->player->getLabel() + " used the scroll " + this->player->getInventoryElementAt(index).getLabel() + ".";
+        unsigned int tempI = this->player->getY();
+        unsigned int tempJ = this->player->getX();
         int iInc = 0;
         int jInc = 0;
         if(tolower(direction) == 'w')
@@ -1873,22 +1902,22 @@ bool Game::playerCastSpell(char direction, unsigned int index){
             jInc = 1;
             
         //Apply AOEs
-        std::vector<Square> t = this->getPlayer()->getScrollAOEAt(index); 
+        std::vector<Square> t = this->player->getScrollAOEAt(index); 
 
         std::vector<Square>::iterator it = t.begin();
         std::vector<Square>::iterator end = t.end();
         //Iterate over weapon's AOEs
         for(it; it != end; it ++){
-            playerAOE(*(it), this->getPlayer()->getAtkDamage(it->getStat(), it->getPot()), this->getPlayer()->getScrollAt(index).getRange(), iInc, jInc);
+            playerAOE(*(it), this->player->getAtkDamage(it->getStat(), it->getPot()), this->player->getScrollAt(index).getRange(), iInc, jInc);
         }
 
         //Apply self effects
-        std::vector<SelfEffect> t2 = this->getPlayer()->getScrollSelfEffectsAt(index); 
+        std::vector<SelfEffect> t2 = this->player->getScrollSelfEffectsAt(index); 
         std::vector<SelfEffect>::iterator it2 = t2.begin();
         std::vector<SelfEffect>::iterator end2 = t2.end();
         //Iterate over weapon's AOEs
         for(it2; it2 != end2; it2 ++){
-            this->getPlayer()->applySelfEffect(*it2);
+            this->player->applySelfEffect(*it2);
         }
         
     }
@@ -1896,9 +1925,9 @@ bool Game::playerCastSpell(char direction, unsigned int index){
 }
 
 void Game::playerAttack(char direction){
-    int weaponIndex = this->getPlayer()->getEquippedWeaponIndex();
-    unsigned int tempI = this->getPlayer()->getY();
-    unsigned int tempJ = this->getPlayer()->getX();
+    int weaponIndex = this->player->getEquippedWeaponIndex();
+    unsigned int tempI = this->player->getY();
+    unsigned int tempJ = this->player->getX();
     int iInc = 0;
     int jInc = 0;
 
@@ -1911,27 +1940,27 @@ void Game::playerAttack(char direction){
     else
         jInc = 1;
 
-    std::vector<Square> t = this->getPlayer()->getEquippedWeaponAOE();
+    std::vector<Square> t = this->player->getEquippedWeaponAOE();
     if(t.size() == 0){
         //If the weapon has no AOEs/player has no weapon equipped, just attack forward with pot=1 and scaling on STR
         Square temp = Square(1, 0, "str", 1);
-        playerAOE(temp, this->getPlayer()->getAtkDamage("str", 1), 0, iInc, jInc);
+        playerAOE(temp, this->player->getAtkDamage("str", 1), 0, iInc, jInc);
     }else{
         std::vector<Square>::iterator it = t.begin();
         std::vector<Square>::iterator end = t.end();
         //Iterate over weapon's AOEs
         for(it; it != end; it ++){
-            playerAOE((*(it)), this->getPlayer()->getAtkDamage(it->getStat(), it->getPot()), this->getPlayer()->getWeaponAt(weaponIndex).getRange(), iInc, jInc);
+            playerAOE((*(it)), this->player->getAtkDamage(it->getStat(), it->getPot()), this->player->getWeaponAt(weaponIndex).getRange(), iInc, jInc);
         }
         //Reduce weapon's durability
-        this->getPlayer()->reduceWeaponDurability(weaponIndex);
+        this->player->reduceWeaponDurability(weaponIndex);
     }
 
 }
 
 void Game::playerAOE(Square effect, unsigned int damage, unsigned int range, int iInc, int jInc){
-    unsigned int tempI = this->getPlayer()->getY();
-    unsigned int tempJ = this->getPlayer()->getX();
+    unsigned int tempI = this->player->getY();
+    unsigned int tempJ = this->player->getX();
     //Go to the origin point
     for(int k = 0; k != range; k++){
         tempI += iInc;
@@ -1950,12 +1979,12 @@ void Game::playerAOE(Square effect, unsigned int damage, unsigned int range, int
         //std::cout<<"\n\n\nRange "<<i + (iInc * fd)<<"  "<< j + rd<<"\n\n\n";
         int tempIndex = getEnemyIndexAtPosition(i + (iInc * fd), j + rd);
         if(tempIndex > -1){
-            if(!enemies.at(tempIndex)->takeDamage(this->getPlayer()->getLabel(), damage)){
+            if(!enemies.at(tempIndex)->takeDamage(this->player->getLabel(), damage)){
                 //Enemy died
-                history += "\n" + this->getPlayer()->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getGp()) + " gp.";
-                this->getPlayer()->addGold(enemies.at(tempIndex)->getGp());
-                history += "\n" + this->getPlayer()->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getExp()) + " exp.";
-                this->getPlayer()->addExp(enemies.at(tempIndex)->getExp());
+                history += "\n" + this->player->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getGp()) + " gp.";
+                this->player->addGold(enemies.at(tempIndex)->getGp());
+                history += "\n" + this->player->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getExp()) + " exp.";
+                this->player->addExp(enemies.at(tempIndex)->getExp());
                 enemies.erase(enemies.begin() + tempIndex);
             }
         }
@@ -1963,12 +1992,12 @@ void Game::playerAOE(Square effect, unsigned int damage, unsigned int range, int
         //std::cout<<"\n\n\nRange "<<i + rd<<"  "<< j + (jInc * fd)<<"\n\n\n";
         int tempIndex = getEnemyIndexAtPosition(i + rd, j + (jInc * fd));
         if(tempIndex > -1){
-            if(!enemies.at(tempIndex)->takeDamage(this->getPlayer()->getLabel(), damage)){
+            if(!enemies.at(tempIndex)->takeDamage(this->player->getLabel(), damage)){
                 //Enemy died
-                history += "\n" + this->getPlayer()->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getGp()) + " gp.";
-                this->getPlayer()->addGold(enemies.at(tempIndex)->getGp());
-                history += "\n" + this->getPlayer()->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getExp()) + " exp.";
-                this->getPlayer()->addExp(enemies.at(tempIndex)->getExp());
+                history += "\n" + this->player->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getGp()) + " gp.";
+                this->player->addGold(enemies.at(tempIndex)->getGp());
+                history += "\n" + this->player->getLabel() + " obtained " + std::to_string(enemies.at(tempIndex)->getExp()) + " exp.";
+                this->player->addExp(enemies.at(tempIndex)->getExp());
                 enemies.erase(enemies.begin() + tempIndex);
             }
 
@@ -2006,7 +2035,7 @@ bool Game::playerOpen(char direction){
                         std::string choice;
                         while(true){
                             bool ac = false;
-                            if(this->getPlayer()->getKeys() > 0){
+                            if(this->player->getKeys() > 0){
                                 std::cout<<"\nDo you want to use a key? y/n\n";
                                 getline(std::cin, choice);
 
@@ -2057,7 +2086,7 @@ bool Game::playerOpen(char direction){
                 std::string choice;
                     while(true){
                         bool ac = false;
-                        if(this->getPlayer()->getKeys() > 0){
+                        if(this->player->getKeys() > 0){
                             std::cout<<"\nDo you want to use a key? y/n\n";
                             getline(std::cin, choice);
 
@@ -2071,6 +2100,8 @@ bool Game::playerOpen(char direction){
                                 ac = true;
                             else
                                 std::cout<<"\nInsert a valid input.";
+                        }else 
+                            ac = true;
                         if(ac){
                             std::cout<<"\nDo you want to perform an ability check on DEX? y/n\n";
                             getline(std::cin, choice);
@@ -2094,7 +2125,7 @@ bool Game::playerOpen(char direction){
                             }else
                                 std::cout<<"\nInsert a valid input.";
                         }
-                    }
+                    
                 }
             }
             
@@ -2128,9 +2159,9 @@ bool Game::playerUse(){
         std::vector<Effect>::iterator end = t.end();
         history += "\n" + this->player->getLabel() + " used " + this->player->getInventoryElementAt(index).getLabel() + ".";
         for(it; it != end; it++){
-            this->getPlayer()->applyEffect(*it);
+            this->player->applyEffect(*it);
         }
-        this->player->discardItem(index);
+        this->player->discardItem(index, false);
         return true;
     }
 
@@ -2414,8 +2445,8 @@ void Game::printRange(std::vector<Square> areasOfEffect, unsigned int range, cha
     else
         jInc = 1;
 
-    unsigned int tempI = this->getPlayer()->getY();
-    unsigned int tempJ = this->getPlayer()->getX();
+    unsigned int tempI = this->player->getY();
+    unsigned int tempJ = this->player->getX();
     //Go to the origin point
     for(int k = 0; k != range; k++){
         tempI += iInc;

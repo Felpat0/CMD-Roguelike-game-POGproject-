@@ -365,7 +365,7 @@ void Player::reduceWeaponDurability(unsigned int index){
         static_cast<Weapon*>(inventoryElements.at(index).get())->setDurability(durability - 1);
         if(static_cast<Weapon*>(inventoryElements.at(index).get())->getDurability() == 0){
             history += "\nThe weapon " +  inventoryElements.at(index)->getLabel() + " broke.";
-            this->discardItem(index);
+            this->discardItem(index, false);
         }
     }
 }
@@ -423,20 +423,23 @@ bool Player::equipItem(unsigned int index){
         return false;
     }
     //If the item has not been identified, return false
-    if(!this->inventoryElements.at(index)->getIsIdentified() && areStringsEqual(this->inventoryElements.at(index)->getType(), "herb")){
+    if(!this->inventoryElements.at(index)->getIsIdentified() && !areStringsEqual(this->inventoryElements.at(index)->getType(), "herb")){
         std::cout<<"\nThis item has to be identified first. Press enter to continue.\n";
         fflush(stdin);
         system("pause");
         return false;
     }
     //If the item is already equipped or can't be equipped, return false
-    if(this->inventoryElements.at(index)->getIsEquipped()){
-        std::cout<<"\nThe chosen item is already equipped. Press enter to continue.\n";
+    if(this->inventoryElements.at(index)->getIsEquipped() || areStringsEqual(this->inventoryElements.at(index)->getType(), "scroll")){
+        std::cout<<"\nThe chosen item is already equipped or can't be equipped. Press enter to continue.\n";
         fflush(stdin);
         system("pause");
         return false;
     }
-    history += "\n" + this->label + " equipped " + this->inventoryElements.at(index)->getLabel() + ".";
+    if(areStringsEqual(this->inventoryElements.at(index)->getType(), "herb") && !this->inventoryElements.at(index)->getIsIdentified())
+        history += "\n" + this->label + " equipped an unidentified herb.";
+    else
+        history += "\n" + this->label + " equipped " + this->inventoryElements.at(index)->getLabel() + ".";
     //Iterate over the inventory to check if an item of the same type is equipped
     //If it is, disequip it
     std::vector<std::unique_ptr<InventoryElement>>::iterator it = inventoryElements.begin();
@@ -462,9 +465,9 @@ bool Player::equipItem(unsigned int index){
     return true;
 }
 
-bool Player::discardItem(unsigned int index){
+bool Player::discardItem(unsigned int index, bool check){
     if(inventoryElements.size() > index){
-        if(inventoryElements.at(index)->getIsEquipped()){
+        if(inventoryElements.at(index)->getIsEquipped() && check){
             std::cout<<"\nYou can't discard an equipped item.\n";
             fflush(stdin);
             system("pause");
