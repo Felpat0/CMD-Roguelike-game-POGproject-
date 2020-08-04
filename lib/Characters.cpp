@@ -171,6 +171,8 @@ void Character::applyEffect(Effect e){
         if(this->maxHp == this->hp)
             this->hp += (int)value;
         this->maxHp += (int)value;
+        if(this->hp > this->maxHp)
+            this->hp = this->maxHp;
         history += "\nMax hp of " + this->getLabel() + ": ";
         if(value > 0)
             history += "+";
@@ -372,23 +374,14 @@ void Player::addInventoryElement(std::unique_ptr<InventoryElement>& element, boo
 }
 
 void Player::addInventoryWeapon(Weapon& element, bool viewInHistory){
-    bool identify = false;
     element.setX(0);
     element.setY(0);
-    if(areStringsEqual(element.getType(), "herb")){
-        if(!element.getIsIdentified())
-            identify = true;
-        if(viewInHistory)
-            history += "\n" + this->getLabel() + " picked up an herb.";
-    }else{
-        if(viewInHistory)
+    if(viewInHistory)
             history += "\n" + this->getLabel() + " picked up an item.";
-    }
     this->inventoryElements.push_back(std::make_unique<Weapon>(element));  
 }
 
 void Player::addInventoryScroll(Scroll& element, bool viewInHistory){
-    bool identify = false;
     element.setX(0);
     element.setY(0);
     if(viewInHistory)

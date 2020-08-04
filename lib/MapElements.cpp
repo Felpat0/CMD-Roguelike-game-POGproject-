@@ -2178,7 +2178,7 @@ bool Game::playerAddFromChest(std::string label, std::string type){
         std::vector<Weapon>::iterator end = inventoryWeapons.end();
         for(it; it != end; it ++){
             if(areStringsEqual(it->getLabel(), label)){
-                player->addInventoryWeapon(*it, true);
+                player->addToInventory<Weapon>(*it, true);
                 return true;
             }
         }
@@ -2187,7 +2187,7 @@ bool Game::playerAddFromChest(std::string label, std::string type){
         std::vector<Scroll>::iterator end = inventoryScrolls.end();
         for(it; it != end; it ++){
             if(areStringsEqual(it->getLabel(), label)){
-                player->addInventoryScroll(*it, true);
+                player->addToInventory<Scroll>(*it, true);
                 return true;
             }
         }
@@ -2445,7 +2445,6 @@ void Game::printUnicode(std::string character, unsigned int color) const{
         for(j; j != 8 - (n+1); j++){
             bytes[0] += binary[j];
         }
-        //std::cout<<"\n"<<bytes[0];
         //Other bytes
         int c;
         for(i = 1; i != n; i++){
@@ -2521,15 +2520,11 @@ void Game::printRange(std::vector<Square> areasOfEffect, unsigned int range, cha
             //std::cout<<"\nCoordinate I "<<i + (iInc * fd)<<"  "<< j + rd;
             iCoordinates.push_back(i + (iInc * fd));
             jCoordinates.push_back(j + rd);
-            //coordinates.insert(std::pair<unsigned int, unsigned int>(i + (iInc * fd), j + rd));
         }else{
-            //std::cout<<"\nCoordinate J "<<i + rd<<"   "<<j + (jInc * fd);
             iCoordinates.push_back(i + rd);
             jCoordinates.push_back(j + (jInc * fd));
-            //coordinates.insert(std::pair<unsigned int, unsigned int>(i + rd, j + (jInc * fd)));
         }
     }
-    //std::cout<<"\n\nSize: "<<coordinates.size()<<"Counter: "<<counter<<"\n\n";
     //Print map
     int y = 0;
     for (int i = player->getY() - (MAP_HEIGHT/2); i != player->getY() + (MAP_HEIGHT/2) +1; i++) {

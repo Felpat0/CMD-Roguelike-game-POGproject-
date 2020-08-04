@@ -109,6 +109,13 @@ class Player : public Character{
     void addInventoryElement(std::unique_ptr<InventoryElement>& element, bool viewInHistory);
     void addInventoryWeapon(Weapon& element, bool viewInHistory);
     void addInventoryScroll(Scroll& element, bool viewInHistory);
+    template<class type> void addToInventory(type a, bool viewInHistory){
+        a.setX(0);
+        a.setY(0);
+        if(viewInHistory)
+                history += "\n" + this->getLabel() + " picked up an item.";
+        this->inventoryElements.push_back(std::make_unique<type>(a));  
+    }
     void reduceWeaponDurability(unsigned int index);
     bool disequipItem(unsigned int index);
     bool equipItem(unsigned int index);

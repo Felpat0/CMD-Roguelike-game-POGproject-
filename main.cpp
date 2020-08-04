@@ -34,7 +34,6 @@ int main(){
     //Game loop
     gameState = 0; //1=lost, 2=won
     int error = 0;
-    
     unsigned int actionType;
     system("cls");
     while(gameState == 0){
