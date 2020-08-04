@@ -110,6 +110,8 @@ void Character::applySelfEffect(SelfEffect e){
         if(this->maxHp == this->hp)
             this->hp += (int)value;
         this->maxHp += (int)value;
+        if(this->hp > this->maxHp)
+            this->hp = this->maxHp;
         history += "\nMax hp of " + this->getLabel() + ": ";
         if(value > 0)
             history += "+";
